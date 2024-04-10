@@ -1,8 +1,8 @@
-# Comparative Experiment
+# Comparative Experiments
 
 ## Introduction
 
-This experiment is designed to compare the performance of different algorithms on a given dataset.
+This project is designed to compare the performance of different algorithms on a given dataset.
 
 ### Dependencies
 
