@@ -1,7 +1,7 @@
 import logging
 from typing import Callable
 
-from .utils import setup_logging, setup_random_state, get_device
+from utils import setup_logging, setup_random_state, get_device
 
 import torch
 from torch.utils.data import DataLoader, Dataset
