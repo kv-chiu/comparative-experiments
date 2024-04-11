@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def mse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
     Calculate the Mean Squared Error (MSE) between true and predicted values.
@@ -12,6 +13,7 @@ def mse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
         float: The Mean Squared Error.
     """
     return np.mean((y_true - y_pred) ** 2)
+
 
 def rmse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
@@ -26,6 +28,7 @@ def rmse(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
     return np.sqrt(mse(y_true, y_pred))
 
+
 def mae(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """
     Calculate the Mean Absolute Error (MAE) between true and predicted values.
@@ -38,6 +41,7 @@ def mae(y_true: np.ndarray, y_pred: np.ndarray) -> float:
         float: The Mean Absolute Error.
     """
     return np.mean(np.abs(y_true - y_pred))
+
 
 def r2(y_true: np.ndarray, y_pred: np.ndarray) -> float:
     """

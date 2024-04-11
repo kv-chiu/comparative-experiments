@@ -1,12 +1,14 @@
 import sys
 from pathlib import Path
 
+import numpy as np
+
 # Add the root directory to the path to import the module
 root_dir = Path(__file__).parent.parent
 sys.path.append(str(root_dir))
 
-import numpy as np
 from comparative_experiments.experiment import SingleExperiment, ExperimentComparator
+
 
 def main():
     # Define the metrics to be used for comparison
@@ -40,6 +42,7 @@ def main():
         print(f"Experiment: {experiment_name}")
         for metric_name, value in metrics.items():
             print(f"{metric_name}: {value}")
+
 
 if __name__ == "__main__":
     main()

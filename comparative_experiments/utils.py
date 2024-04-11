@@ -1,8 +1,10 @@
 import logging
 import os
 import random
+
 import numpy as np
 import torch
+
 
 def setup_random_state(seed: int, if_torch: bool = False) -> None:
     """
@@ -22,13 +24,15 @@ def setup_random_state(seed: int, if_torch: bool = False) -> None:
 
     if not if_torch:
         return
-    
+
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
 
-def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - %(message)s', date_format='%Y-%m-%d %H:%M:%S', logger_name=None):
+
+def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - %(message)s',
+                  date_format='%Y-%m-%d %H:%M:%S', logger_name=None):
     """
     Sets up the logging configuration.
 
@@ -50,6 +54,7 @@ def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - 
         logger.addHandler(handler)
     else:
         logging.basicConfig(level=level, format=log_format, datefmt=date_format)
+
 
 def get_device(device: str, cuda_index: int = 0) -> torch.device:
     """

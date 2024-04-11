@@ -1,24 +1,16 @@
 import logging
 from typing import Callable
 
-from .utils import setup_logging, setup_random_state, get_device
-
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
-import numpy as np
 
-# Assuming setup_logging, setup_random_state, get_device are defined in utils.py and properly imported here
-# from .utils import setup_logging, setup_random_state, get_device
-
-# Setup logging and device as per your setup
-setup_logging()
-device = get_device('cuda', 0)
-setup_random_state(3407, if_torch=True)
 
 class GeneralDataset(Dataset):
     """
     General dataset class for PyTorch.
     """
+
     def __init__(self, X: torch.Tensor, y: torch.Tensor, transform: Callable = None):
         self.X = X
         self.y = y
@@ -33,7 +25,9 @@ class GeneralDataset(Dataset):
             sample = self.transform(sample)
         return sample
 
-def create_dataloader(X: np.ndarray, y: np.ndarray, batch_size: int, shuffle: bool = True, transform: Callable = None, device: torch.device | str = 'cpu') -> DataLoader:
+
+def create_dataloader(X: np.ndarray, y: np.ndarray, batch_size: int, shuffle: bool = True, transform: Callable = None,
+                      device: torch.device | str = 'cpu') -> DataLoader:
     """
     Create a PyTorch DataLoader from input data.
 
@@ -54,6 +48,7 @@ def create_dataloader(X: np.ndarray, y: np.ndarray, batch_size: int, shuffle: bo
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
     return dataloader
 
+
 def evaluate_model(model, dataloader, loss_fn, device='cpu') -> float:
     model.to(device)
     model.eval()
@@ -65,6 +60,7 @@ def evaluate_model(model, dataloader, loss_fn, device='cpu') -> float:
             total_loss += loss_fn(predictions, y).item()
     avg_loss = total_loss / len(dataloader)
     return avg_loss
+
 
 def train_model(model, train_loader, val_loader, loss_fn, optimizer, epochs=5, eval_interval=1, device='cpu') -> None:
     """
@@ -101,6 +97,7 @@ def train_model(model, train_loader, val_loader, loss_fn, optimizer, epochs=5, e
         if (epoch + 1) % eval_interval == 0:
             val_loss = evaluate_model(model, val_loader, loss_fn, device)
             logging.info(f'Epoch {epoch + 1}/{epochs}, Validation Loss: {val_loss}')
+
 
 def infer(model, test_loader, device='cpu') -> np.ndarray:
     """

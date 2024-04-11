@@ -1,4 +1,5 @@
 from typing import Callable, Dict, List
+
 import numpy as np
 
 
@@ -69,7 +70,7 @@ class ExperimentComparator:
         self.metrics: Dict[str, Callable[[np.ndarray, np.ndarray], float]] = metrics
         self.X: np.ndarray = np.array([])
         self.y: np.ndarray = np.array([])
-    
+
     def add_experiment(self, experiment: SingleExperiment) -> None:
         """
         Adds an experiment to be compared.
@@ -78,7 +79,7 @@ class ExperimentComparator:
             experiment (SingleExperiment): The experiment to add.
         """
         self.experiments.append(experiment)
-    
+
     def set_data(self, X: np.ndarray, y: np.ndarray) -> None:
         """
         Sets the dataset to be used by all experiments in the comparison.
@@ -89,7 +90,7 @@ class ExperimentComparator:
         """
         self.X = X
         self.y = y
-    
+
     def run(self) -> Dict[str, Dict[str, float]]:
         """
         Executes all added experiments using the set data, evaluates them using the specified metrics, and returns the results.
@@ -101,6 +102,7 @@ class ExperimentComparator:
         results: Dict[str, Dict[str, float]] = {}
         for experiment in self.experiments:
             predictions: np.ndarray = experiment.run(self.X, self.y)
-            experiment_results: Dict[str, float] = {metric_name: metric(self.y, predictions) for metric_name, metric in self.metrics.items()}
+            experiment_results: Dict[str, float] = {metric_name: metric(self.y, predictions) for metric_name, metric in
+                                                    self.metrics.items()}
             results[experiment.name] = experiment_results
         return results
