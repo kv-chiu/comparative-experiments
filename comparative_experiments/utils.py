@@ -28,7 +28,7 @@ def setup_random_state(seed: int, if_torch: bool = False) -> None:
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
 
-def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - %(message)s', date_format='%Y-%m-%d %H:%M:%S'):
+def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - %(message)s', date_format='%Y-%m-%d %H:%M:%S', logger_name=None):
     """
     Sets up the logging configuration.
 
@@ -36,11 +36,20 @@ def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - 
         level (int): Logging level (e.g., logging.INFO, logging.DEBUG).
         log_format (str): Format for the logging messages.
         date_format (str): Format for the date/time part of the logging messages.
-
+        logger_name (str): Optional name of the specific logger to configure. If None, configures the root logger.
     Returns:
         None
     """
-    logging.basicConfig(level=level, format=log_format, datefmt=date_format)
+    if logger_name:
+        logger = logging.getLogger(logger_name)
+        for handler in logger.handlers:
+            logger.removeHandler(handler)
+        logger.setLevel(level)
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter(fmt=log_format, datefmt=date_format))
+        logger.addHandler(handler)
+    else:
+        logging.basicConfig(level=level, format=log_format, datefmt=date_format)
 
 def get_device(device: str, cuda_index: int = 0) -> torch.device:
     """
