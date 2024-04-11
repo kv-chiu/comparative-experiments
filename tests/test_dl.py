@@ -8,7 +8,7 @@ from comparative_experiments.dl import GeneralDataset, create_dataloader, evalua
     train_model, infer
 from comparative_experiments.utils import get_device, setup_random_state, setup_logging
 
-cuda_device = get_device()
+cuda_device = get_device('cuda', 0)
 setup_logging()
 setup_random_state(3407)
 
@@ -119,7 +119,7 @@ def test_train_model_with_cuda():
     val_loader = create_dataloader(X, y, batch_size, device=cuda_device)
     loss_fn = nn.MSELoss()
     optimizer = optim.SGD(model.parameters(), lr=0.01)
-    train_model(model, train_loader, val_loader, loss_fn, optimizer, device=device)
+    train_model(model, train_loader, val_loader, loss_fn, optimizer, device=cuda_device)
 
 
 def test_infer_with_cuda():
