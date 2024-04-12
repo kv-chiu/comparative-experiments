@@ -36,14 +36,14 @@ def setup_logging(level=logging.INFO, log_format='%(asctime)s - %(levelname)s - 
 
     Parameters
     ----------
-        level : int
-            Logging level (e.g., logging.INFO, logging.DEBUG).
-        log_format : str
-            Format for the logging messages.
-        date_format : str
-            Format for the date/time part of the logging messages.
-        logger_name : str
-            Optional name of the specific logger to configure. If None, configures the root logger.
+    level : int
+        Logging level (e.g., logging.INFO, logging.DEBUG).
+    log_format : str
+        Format for the logging messages.
+    date_format : str
+        Format for the date/time part of the logging messages.
+    logger_name : str
+        Optional name of the specific logger to configure. If None, configures the root logger.
     """
 
     if logger_name:
