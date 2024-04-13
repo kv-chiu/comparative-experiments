@@ -88,7 +88,7 @@ def test_experiment_comparator_export_results():
     comparator = ExperimentComparator(metrics=metrics)
     comparator.add_experiment(experiment)
     comparator.set_data(X=np.array([1, 2, 3]), y=np.array([1, 2, 3]))
-    comparator.run()
+    results = comparator.run()
 
     save_path = "./test_results.csv"
     comparator.export_results(save_path)
