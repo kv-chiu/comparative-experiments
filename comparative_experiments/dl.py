@@ -9,6 +9,31 @@ from torch.utils.data import DataLoader, Dataset
 class GeneralDataset(Dataset):
     """
     General dataset class for PyTorch.
+
+    Parameters
+    ----------
+    X : torch.Tensor
+        Input data.
+    y : torch.Tensor
+        Labels or ground truth data.
+    transform : Callable
+        Transformation function.
+
+    Attributes
+    ----------
+    X : torch.Tensor
+        Input data.
+    y : torch.Tensor
+        Labels or ground truth data.
+    transform : Callable
+        Transformation function.
+
+    Methods
+    ----------
+    __len__()
+        Returns the length of the dataset.
+    __getitem__(idx)
+        Returns a sample from the dataset.
     """
 
     def __init__(self, X: torch.Tensor, y: torch.Tensor, transform: Callable = None):
@@ -26,22 +51,37 @@ class GeneralDataset(Dataset):
         return sample
 
 
-def create_dataloader(X: np.ndarray, y: np.ndarray, batch_size: int, shuffle: bool = True, transform: Callable = None,
-                      device: torch.device | str = 'cpu') -> DataLoader:
-    """
-    Create a PyTorch DataLoader from input data.
+def create_dataloader(
+        X: np.ndarray,
+        y: np.ndarray,
+        batch_size: int,
+        shuffle: bool = True,
+        transform: Callable = None,
+        device: torch.device | str = 'cpu'
+) -> DataLoader:
+    """Create a PyTorch DataLoader from input data.
 
-    Args:
-        X (np.ndarray): Input data.
-        y (np.ndarray): Labels.
-        batch_size (int): Batch size.
-        shuffle (bool): Whether to shuffle the data.
-        transform (Callable): Optional transform function.
-        device (torch.device or str): Device to use ('cpu' or 'cuda').
+    Parameters
+    ----------
+    X : np.ndarray
+        Input data.
+    y : np.ndarray
+        Labels or ground truth data.
+    batch_size : int
+        Batch size.
+    shuffle : bool
+        Whether to shuffle the data.
+    transform : Callable
+        Transformation function.
+    device : torch.device or str
+        Device to use ('cpu' or 'cuda').
 
-    Returns:
-        DataLoader: PyTorch DataLoader object.
+    Returns
+    -------
+    dataloader : DataLoader
+        DataLoader for the input data.
     """
+
     X_tensor = torch.tensor(X, dtype=torch.float32).to(device)
     y_tensor = torch.tensor(y, dtype=torch.float32).to(device)
     dataset = GeneralDataset(X_tensor, y_tensor, transform=transform)
@@ -49,7 +89,31 @@ def create_dataloader(X: np.ndarray, y: np.ndarray, batch_size: int, shuffle: bo
     return dataloader
 
 
-def evaluate_model(model, dataloader, loss_fn, device='cpu') -> float:
+def evaluate_model(
+        model: torch.nn.Module,
+        dataloader: DataLoader,
+        loss_fn: Callable,
+        device: str | torch.device = 'cpu'
+) -> float:
+    """Evaluate the model on the given data.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Model to evaluate.
+    dataloader : DataLoader
+        DataLoader for the data.
+    loss_fn : Callable
+        Loss function.
+    device : str or torch.device
+        Device to use ('cpu' or 'cuda').
+
+    Returns
+    -------
+    avg_loss : float
+        Average loss over the data.
+    """
+
     model.to(device)
     model.eval()
     total_loss = 0
@@ -62,23 +126,38 @@ def evaluate_model(model, dataloader, loss_fn, device='cpu') -> float:
     return avg_loss
 
 
-def train_model(model, train_loader, val_loader, loss_fn, optimizer, epochs=5, eval_interval=1, device='cpu') -> None:
-    """
-    Train the model with controlled evaluation frequency.
+def train_model(
+        model: torch.nn.Module,
+        train_loader: DataLoader,
+        val_loader: DataLoader,
+        loss_fn: Callable,
+        optimizer: torch.optim.Optimizer,
+        epochs: int = 5,
+        eval_interval: int = 1,
+        device: str | torch.device = 'cpu'
+) -> None:
+    """Train the model with controlled evaluation frequency.
 
-    Args:
-        model: The PyTorch model to train.
-        train_loader (DataLoader): DataLoader for training data.
-        val_loader (DataLoader): DataLoader for validation data.
-        loss_fn: Loss function.
-        optimizer: Optimizer.
-        epochs (int): Number of epochs to train for.
-        eval_interval (int): Interval (in epochs) at which to perform evaluation.
-        device (str): Device to use ('cpu' or 'cuda').
-
-    Returns:
-        None
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Model to be trained.
+    train_loader : DataLoader
+        DataLoader for training data.
+    val_loader : DataLoader
+        DataLoader for validation data.
+    loss_fn : Callable
+        Loss function.
+    optimizer : torch.optim.Optimizer
+        Optimizer to use.
+    epochs : int
+        Number of epochs to train.
+    eval_interval : int
+        Interval at which to evaluate the model.
+    device : str or torch.device
+        Device to use ('cpu' or 'cuda').
     """
+
     model.to(device)
     for epoch in range(epochs):
         model.train()
@@ -99,18 +178,24 @@ def train_model(model, train_loader, val_loader, loss_fn, optimizer, epochs=5, e
             logging.info(f'Epoch {epoch + 1}/{epochs}, Validation Loss: {val_loss}')
 
 
-def infer(model, test_loader, device='cpu') -> np.ndarray:
-    """
-    Perform inference using the trained model.
+def infer(model: torch.nn.Module, test_loader: DataLoader, device: str | torch.device = 'cpu') -> np.ndarray:
+    """Perform inference using the trained model.
 
-    Args:
-        model: The PyTorch model for inference.
-        test_loader (DataLoader): DataLoader for test data.
-        device (str): Device to use ('cpu' or 'cuda').
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Trained model.
+    test_loader : DataLoader
+        DataLoader for test data.
+    device : str or torch.device
+        Device to use ('cpu' or 'cuda').
 
-    Returns:
-        np.ndarray: Predictions from the model.
+    Returns
+    -------
+    infer_result : np.ndarray
+        Predictions from the model.
     """
+
     model.to(device)
     model.eval()
     predictions = []
