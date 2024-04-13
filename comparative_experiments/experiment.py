@@ -1,6 +1,7 @@
 from typing import Callable, Dict, List
 
 import numpy as np
+import pandas as pd
 
 
 class SingleExperiment:
@@ -97,12 +98,38 @@ class ExperimentComparator:
         ----------
         metrics : Dict[str, Callable[[np.ndarray, np.ndarray], float]]
             Metrics to be used for comparing experiments, mapped by name to their respective callable implementations.
+
+        Attributes
+        ----------
+        experiments : List[SingleExperiment]
+            List of experiments to be compared.
+        metrics : Dict[str, Callable[[np.ndarray, np.ndarray], float]]
+            Metrics to be used for comparing experiments, mapped by name to their respective callable implementations.
+        X : np.ndarray
+            Input data for the experiments.
+        y : np.ndarray
+            Labels or ground truth data for the experiments.
+        results : Dict[str, Dict[str, float]] | None
+            A dictionary where each key is an experiment name and each value is another dictionary mapping
+            metric names to their computed values for that experiment.
+
+        Methods
+        ----------
+        add_experiment(experiment)
+            Adds an experiment to be compared.
+        set_data(X, y)
+            Sets the dataset to be used by all experiments in the comparison.
+        run()
+            Runs all experiments using the set data, evaluates them using the specified metrics, and returns the results.
+        export_results(path)
+            Exports the results of the experiments to a CSV file.
         """
 
         self.experiments: List[SingleExperiment] = []
         self.metrics: Dict[str, Callable[[np.ndarray, np.ndarray], float]] = metrics
         self.X: np.ndarray = np.array([])
         self.y: np.ndarray = np.array([])
+        self.results: Dict[str, Dict[str, float]] | None = None
 
     def add_experiment(self, experiment: SingleExperiment) -> None:
         """Adds an experiment to be compared.
@@ -146,4 +173,21 @@ class ExperimentComparator:
             experiment_results: Dict[str, float] = {metric_name: metric(self.y, predictions) for metric_name, metric in
                                                     self.metrics.items()}
             results[experiment.name] = experiment_results
+
+        self.results = results
         return results
+
+    def export_results(self, path: str) -> None:
+        """Exports the results of the experiments to a CSV file.
+
+        Parameters
+        ----------
+        path : str
+            The path to save the CSV file to.
+        """
+
+        if self.results is None:
+            raise ValueError("No results to export. Run the experiments first.")
+
+        results_df = pd.DataFrame(self.results).T
+        results_df.to_csv(path)
