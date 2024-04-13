@@ -74,3 +74,24 @@ def test_experiment_comparator_run():
     results = comparator.run()
     assert results["Mock Experiment"][
                "Dummy Metric"] == 1.0, "The experiment comparator did not compute metrics correctly."
+
+
+def test_experiment_comparator_export_results():
+    # Assuming you have a metrics setup and a simple experiment that can be evaluated
+    def mock_run_callable(X, y):
+        return X  # Return X as prediction for simplicity
+
+    experiment = SingleExperiment(name="Mock Experiment", run_callable=mock_run_callable)
+    metrics = {
+        'Dummy Metric': lambda y_true, y_pred: 1.0  # Dummy metric for testing
+    }
+    comparator = ExperimentComparator(metrics=metrics)
+    comparator.add_experiment(experiment)
+    comparator.set_data(X=np.array([1, 2, 3]), y=np.array([1, 2, 3]))
+    comparator.run()
+
+    save_path = "./test_results.csv"
+    comparator.export_results(save_path)
+    assert "Mock Experiment" in results, "The experiment results were not exported correctly."
+    assert "Dummy Metric" in results["Mock Experiment"], "The metric results were not exported correctly."
+    assert results["Mock Experiment"]["Dummy Metric"] == 1.0, "The metric value was not exported correctly."

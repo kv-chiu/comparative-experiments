@@ -43,6 +43,10 @@ def main():
         for metric_name, value in metrics.items():
             print(f"{metric_name}: {value}")
 
+    # Export the results to a CSV file
+    save_path = "./experiment_results.csv"
+    comparator.export_results(save_path)
+
 
 if __name__ == "__main__":
     main()
