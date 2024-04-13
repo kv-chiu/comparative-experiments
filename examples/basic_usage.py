@@ -8,26 +8,39 @@ root_dir = Path(__file__).parent.parent
 sys.path.append(str(root_dir))
 
 from comparative_experiments.experiment import SingleExperiment, ExperimentComparator
+from comparative_experiments.metrics import mse, rmse, mae, r2
 
 
 def main():
     # Define the metrics to be used for comparison
     metrics = {
-        'Mean Squared Error': lambda y_true, y_pred: np.mean((y_true - y_pred) ** 2),
-        'Mean Absolute Error': lambda y_true, y_pred: np.mean(np.abs(y_true - y_pred))
+        'MSE': mse,
+        'RMSE': rmse,
+        'MAE': mae,
+        'R2': r2
     }
 
     # Initialize the comparator
     comparator = ExperimentComparator(metrics=metrics)
 
     # Create a simple experiment
-    def mock_run_callable(X, y):
+    def mock_run_callable1(X, y):
         return X  # Simple mock behavior for testing
 
-    experiment = SingleExperiment(name="Mock Experiment", run_callable=mock_run_callable)
+    def mock_run_callable2(X, y):
+        return X * 2
+
+    def mock_run_callable3(X, y):
+        return X * 3
+
+    experiment1 = SingleExperiment(name="Mock Experiment 1", run_callable=mock_run_callable1)
+    experiment2 = SingleExperiment(name="Mock Experiment 2", run_callable=mock_run_callable2)
+    experiment3 = SingleExperiment(name="Mock Experiment 3", run_callable=mock_run_callable3)
 
     # Add the experiment to the comparator
-    comparator.add_experiment(experiment)
+    comparator.add_experiment(experiment1)
+    comparator.add_experiment(experiment2)
+    comparator.add_experiment(experiment3)
 
     # Set the data for the experiments
     X_test = np.array([1, 2, 3])

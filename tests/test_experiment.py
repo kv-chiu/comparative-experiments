@@ -2,6 +2,7 @@ import numpy as np
 
 from comparative_experiments.experiment import SingleExperiment, \
     ExperimentComparator  # Adjust the import path as necessary
+from comparative_experiments.metrics import mse, rmse, mae, r2
 
 
 def test_single_experiment_init():
@@ -95,3 +96,60 @@ def test_experiment_comparator_export_results():
     assert "Mock Experiment" in results, "The experiment results were not exported correctly."
     assert "Dummy Metric" in results["Mock Experiment"], "The metric results were not exported correctly."
     assert results["Mock Experiment"]["Dummy Metric"] == 1.0, "The metric value was not exported correctly."
+
+def test_experiment_comparator_export_results_with_multiple_experiments():
+    # Assuming you have a metrics setup and multiple experiments that can be evaluated
+    def mock_run_callable1(X, y):
+        return X  # Return X as prediction for simplicity
+
+    def mock_run_callable2(X, y):
+        return X * 2  # Return X * 2 as prediction for simplicity
+
+    def mock_run_callable3(X, y):
+        return X * 3
+
+    experiment1 = SingleExperiment(name="Mock Experiment 1", run_callable=mock_run_callable1)
+    experiment2 = SingleExperiment(name="Mock Experiment 2", run_callable=mock_run_callable2)
+    experiment3 = SingleExperiment(name="Mock Experiment 3", run_callable=mock_run_callable3)
+    metrics = {
+        'MSE': mse,
+        'RMSE': rmse,
+        'MAE': mae,
+        'R2': r2
+    }
+    comparator = ExperimentComparator(metrics=metrics)
+    comparator.add_experiment(experiment1)
+    comparator.add_experiment(experiment2)
+    comparator.add_experiment(experiment3)
+    comparator.set_data(X=np.array([1, 2, 3]), y=np.array([1, 2, 3]))
+    results = comparator.run()
+
+    save_path = "./test_results.csv"
+    comparator.export_results(save_path)
+    assert "Mock Experiment 1" in results, "The experiment results were not exported correctly."
+    assert "Mock Experiment 2" in results, "The experiment results were not exported correctly."
+    assert "Mock Experiment 3" in results, "The experiment results were not exported correctly."
+    assert "MSE" in results["Mock Experiment 1"], "The metric results were not exported correctly."
+    assert "RMSE" in results["Mock Experiment 1"], "The metric results were not exported correctly."
+    assert "MAE" in results["Mock Experiment 1"], "The metric results were not exported correctly."
+    assert "R2" in results["Mock Experiment 1"], "The metric results were not exported correctly."
+    assert "MSE" in results["Mock Experiment 2"], "The metric results were not exported correctly."
+    assert "RMSE" in results["Mock Experiment 2"], "The metric results were not exported correctly."
+    assert "MAE" in results["Mock Experiment 2"], "The metric results were not exported correctly."
+    assert "R2" in results["Mock Experiment 2"], "The metric results were not exported correctly."
+    assert "MSE" in results["Mock Experiment 3"], "The metric results were not exported correctly."
+    assert "RMSE" in results["Mock Experiment 3"], "The metric results were not exported correctly."
+    assert "MAE" in results["Mock Experiment 3"], "The metric results were not exported correctly."
+    assert "R2" in results["Mock Experiment 3"], "The metric results were not exported correctly."
+    assert results["Mock Experiment 1"]["MSE"] == 0.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 1"]["RMSE"] == 0.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 1"]["MAE"] == 0.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 1"]["R2"] == 1.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 2"]["MSE"] == 1.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 2"]["RMSE"] == 1.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 2"]["MAE"] == 1.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 2"]["R2"] == 0.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 3"]["MSE"] == 4.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 3"]["RMSE"] == 2.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 3"]["MAE"] == 2.0, "The metric value was not exported correctly."
+    assert results["Mock Experiment 3"]["R2"] == -3.0, "The metric value was not exported correctly."
