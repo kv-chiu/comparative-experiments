@@ -90,3 +90,8 @@ python ./examples/basic_usage.py
 ```bash
 pytest
 ```
+
+## Future Work
+
+- Impove the stability of the comparator
+- [ ] Real-time Data logging
