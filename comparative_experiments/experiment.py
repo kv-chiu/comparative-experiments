@@ -1,3 +1,5 @@
+import logging
+import time
 from typing import Callable, Dict, List
 
 import numpy as np
@@ -167,12 +169,21 @@ class ExperimentComparator:
             metric names to their computed values for that experiment.
         """
 
+        logging.basicConfig(
+            filename=f"{time.time()}_experiment_logs.log",
+            level=logging.INFO,
+            format='%(asctime)s - %(message)s',
+            datefmt='%d-%b-%y %H:%M:%S'
+        )
         results: Dict[str, Dict[str, float]] = {}
         for experiment in self.experiments:
             predictions: np.ndarray = experiment.run(self.X, self.y)
-            experiment_results: Dict[str, float] = {metric_name: metric(self.y, predictions) for metric_name, metric in
-                                                    self.metrics.items()}
+            experiment_results: Dict[str, float] = {
+                metric_name: metric(self.y, predictions) for metric_name, metric in self.metrics.items()
+            }
             results[experiment.name] = experiment_results
+            # Log the results of this experiment
+            logging.info(f"Experiment: {experiment.name}, Results: {experiment_results}")
 
         self.results = results
         return results

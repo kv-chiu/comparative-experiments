@@ -77,3 +77,29 @@ def get_device(device_type: str, cuda_index: int = 0) -> torch.device:
     if device_type == 'cuda' and torch.cuda.is_available():
         return torch.device('cuda', cuda_index)
     return torch.device('cpu')
+
+
+def compile_results_from_logs(log_filename: str) -> Dict[str, Dict[str, float]]:
+    """Compiles the results of experiments from a log file.
+
+    Parameters
+    ----------
+    log_filename : str
+        The path to the log file containing the experiment results.
+
+    Returns
+    -------
+    results : Dict[str, Dict[str, float]]
+        A dictionary where each key is an experiment name and each value is another dictionary mapping
+        metric names to their computed values for that experiment.
+    """
+
+    results = {}
+    with open(log_filename, 'r') as log_file:
+        for line in log_file:
+            if 'Experiment:' in line:
+                parts = line.split('Results: ')
+                experiment_name = parts[0].split('Experiment: ')[1].strip()
+                result_dict = eval(parts[1].strip())
+                results[experiment_name] = result_dict
+    return results
