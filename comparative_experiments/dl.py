@@ -205,3 +205,25 @@ def infer(model: torch.nn.Module, test_loader: DataLoader, device: str | torch.d
             batch_predictions = model(X)
             predictions.extend(batch_predictions.cpu().numpy())
     return np.array(predictions)
+
+
+def load_model_from_checkpoint(model: torch.nn.Module, checkpoint_path: str, device: str | torch.device = 'cpu') -> torch.nn.Module:
+    """Load model from a saved checkpoint.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Model to load the checkpoint into.
+    checkpoint_path : str
+        Path to the checkpoint file.
+    device : str or torch.device
+        Device to use ('cpu' or 'cuda').
+
+    Returns
+    -------
+    model : torch.nn.Module
+        Model loaded from the checkpoint.
+    """
+
+    model.load_state_dict(torch.load(checkpoint_path, map_location=device))
+    return model
