@@ -55,7 +55,7 @@ def create_dataloader(
         X: np.ndarray,
         y: np.ndarray,
         batch_size: int,
-        shuffle: bool = True,
+        shuffle: bool = False,
         transform: Callable = None,
         device: torch.device | str = 'cpu'
 ) -> DataLoader:
