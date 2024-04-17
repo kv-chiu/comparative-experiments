@@ -227,3 +227,17 @@ def load_model_from_checkpoint(model: torch.nn.Module, checkpoint_path: str, dev
 
     model.load_state_dict(torch.load(checkpoint_path, map_location=device))
     return model
+
+
+def save_pytorch_model(model: torch.nn.Module, path: str) -> None:
+    """Save a PyTorch model to a file.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Model to save.
+    path : str
+        Path to save the model to.
+    """
+
+    torch.save(model.state_dict(), path)

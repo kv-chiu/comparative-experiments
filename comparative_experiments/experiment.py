@@ -43,6 +43,7 @@ class SingleExperiment:
 
         self.name: str = name
         self.run_callable: Callable[[np.ndarray, np.ndarray], np.ndarray] = run_callable
+        self.model = None
 
     def run(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Executes the experiment using the provided data and labels.
@@ -61,6 +62,12 @@ class SingleExperiment:
         """
 
         return self.run_callable(X, y)
+
+    def set_model(self, model):
+        self.model = model
+
+    def get_model(self):
+        return self.model
 
 
 class ExperimentComparator:
