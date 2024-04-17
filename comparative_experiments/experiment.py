@@ -210,7 +210,7 @@ class ExperimentComparator:
         results_df = pd.DataFrame(self.results).T
         results_df.to_csv(path)
 
-    def get_best_experiment(self, metric_name: str, method: str = 'max') -> str:
+    def get_best_experiment(self, metric_name: str, method: str = 'max') -> SingleExperiment:
         """Returns the name of the best experiment based on the specified metric.
 
         Parameters
@@ -222,18 +222,19 @@ class ExperimentComparator:
 
         Returns
         -------
-        best_experiment : str
-            The name of the best experiment based on the specified metric.
+        best_experiment : SingleExperiment
+            The best experiment based on the specified metric.
         """
 
         if self.results is None:
             raise ValueError("No results to compare. Run the experiments first.")
 
         if method == 'max':
-            best_experiment = max(self.results, key=lambda x: self.results[x][metric_name])
+            best_experiment_name = max(self.results, key=lambda x: self.results[x][metric_name])
         elif method == 'min':
-            best_experiment = min(self.results, key=lambda x: self.results[x][metric_name])
+            best_experiment_name = min(self.results, key=lambda x: self.results[x][metric_name])
         else:
             raise ValueError("Invalid method. Please use 'max' or 'min'.")
 
+        best_experiment = next((exp for exp in self.experiments if exp.name == best_experiment_name), None)
         return best_experiment
