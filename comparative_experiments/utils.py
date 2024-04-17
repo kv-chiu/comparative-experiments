@@ -1,6 +1,7 @@
 import logging
 import os
 import random
+from typing import Dict, Tuple
 
 import numpy as np
 import torch
@@ -103,3 +104,68 @@ def compile_results_from_logs(log_filename: str) -> Dict[str, Dict[str, float]]:
                 result_dict = eval(parts[1].strip())
                 results[experiment_name] = result_dict
     return results
+
+
+def create_sequences(
+        data: np.ndarray,
+        x_columns: List[int],
+        x_seq_length: int,
+        y_columns: List[int],
+        y_seq_length: int
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Create sequences for training a sequence model.
+
+    Parameters
+    ----------
+    data : np.ndarray
+        The data to create sequences from.
+    x_columns : List[int]
+        The columns to use for the input sequences.
+    x_seq_length : int
+        The length of the input sequences.
+    y_columns : List[int]
+        The columns to use for the output sequences.
+    y_seq_length : int
+        The length of the output sequences.
+
+    Returns
+    -------
+    X : np.ndarray
+        The input sequences.
+    y : np.ndarray
+        The output sequences.
+
+    Examples
+    --------
+    >>> data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])
+    >>> x_columns = [0, 1]
+    >>> x_seq_length = 2
+    >>> y_columns = [2]
+    >>> y_seq_length = 1
+    >>> X, y = create_sequences(data, x_columns, x_seq_length, y_columns, y_seq_length)
+    >>> X.shape
+    (3, 2, 2)
+    >>> y.shape
+    (3, 1, 1)
+    >>> X[0]
+    array([[1, 2],
+           [4, 5]])
+    >>> y[0]
+    array([[9]])
+    >>> X[1]
+    array([[4, 5],
+           [7, 8]])
+    >>> y[1]
+    array([[12]])
+    >>> X[2]
+    array([[7, 8],
+           [10, 11]])
+    >>> y[2]
+    array([[15]])
+    """
+
+    X, y = [], []
+    for i in range(len(data) - (x_seq_length + y_seq_length) + 1):
+        X.append(data[i: i + x_seq_length, x_columns])
+        y.append(data[i + x_seq_length: i + x_seq_length + y_seq_length, y_columns])
+    return np.array(X), np.array(y)

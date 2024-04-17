@@ -7,7 +7,7 @@ import numpy as np
 import pytest
 import torch
 
-from comparative_experiments.utils import setup_logging, setup_random_state, get_device
+from comparative_experiments.utils import setup_logging, setup_random_state, get_device, create_sequences
 
 
 def test_setup_logging():
@@ -60,3 +60,20 @@ def test_get_device():
         assert device.type == 'cuda', "CUDA device not set correctly"
     else:
         pytest.skip("CUDA is not available, skipping CUDA device test")
+
+
+def test_create_sequences():
+    data = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [10, 11, 12], [13, 14, 15]])
+    x_columns = [0, 1]
+    x_seq_length = 2
+    y_columns = [2]
+    y_seq_length = 1
+    X, y = create_sequences(data, x_columns, x_seq_length, y_columns, y_seq_length)
+    assert X.shape == (3, 2, 2), "X shape is incorrect"
+    assert y.shape == (3, 1, 1), "y shape is incorrect"
+    assert np.array_equal(X[0], np.array([[1, 2], [4, 5]])), "X data is incorrect"
+    assert np.array_equal(y[0], np.array([[9]])), "y data is incorrect"
+    assert np.array_equal(X[1], np.array([[4, 5], [7, 8]])), "X data is incorrect"
+    assert np.array_equal(y[1], np.array([[12]])), "y data is incorrect"
+    assert np.array_equal(X[2], np.array([[7, 8], [10, 11]])), "X data is incorrect"
+    assert np.array_equal(y[2], np.array([[15]])), "y data is incorrect"
