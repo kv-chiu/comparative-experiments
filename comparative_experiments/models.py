@@ -34,6 +34,32 @@ class MyRNN(nn.Module):
 
 
 class MyCNN(nn.Module):
+    """
+    A simple CNN model for classification.
+
+    Parameters
+    ----------
+    input_channels : int
+        Number of input channels.
+    output_size : int
+        Number of classes to predict.
+
+    Methods
+    ----------
+    forward(x)
+        Defines the forward pass of the model.
+
+    Input
+    ----------
+    x : torch.Tensor
+        Input tensor of shape (batch_size, input_channels, sequence_length).
+
+    Output
+    ----------
+    x : torch.Tensor
+        Output tensor of shape (batch_size, output_size).
+    """
+
     def __init__(self, input_channels, output_size):
         super(MyCNN, self).__init__()
         self.conv1 = nn.Conv1d(in_channels=input_channels, out_channels=16, kernel_size=2)
