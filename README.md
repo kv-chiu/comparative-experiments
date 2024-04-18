@@ -94,4 +94,5 @@ pytest
 ## Future Work
 
 - Impove the stability of the comparator
-- [ ] Real-time Data logging
+- [ ] SingleExperiment logging
+- [ ] ExperimentComparator logging
