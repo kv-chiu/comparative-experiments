@@ -23,27 +23,40 @@ class SingleExperiment:
         Name of the experiment.
     run_callable : Callable[[np.ndarray, np.ndarray], np.ndarray]
         Callable that defines the logic for running the experiment.
+    model : Any
+        The model used in the experiment (optional).
 
     Methods:
     ----------
     run(X, y)
         Executes the experiment using the provided data and labels.
+    set_model(model)
+        Sets the model for the experiment.
+    get_model()
+        Returns the model used in the experiment.
     """
 
     def __init__(self, name: str, run_callable: Callable[[np.ndarray, np.ndarray], np.ndarray]):
-        """Initializes a SingleExperiment instance.
+        """Initializes a SingleExperiment instance with its own logger.
 
         Parameters
         ----------
         name : str
             Name of the experiment.
-        run_callable : Callable[[np.ndarray, np.ndarray],np.ndarray]
+        run_callable : Callable[[np.ndarray, np.ndarray], np.ndarray]
             Callable that defines the logic for running the experiment.
         """
 
-        self.name: str = name
-        self.run_callable: Callable[[np.ndarray, np.ndarray], np.ndarray] = run_callable
+        self.name = name
+        self.run_callable = run_callable
         self.model = None
+        self.logger = logging.getLogger(self.name)
+        handler = logging.FileHandler(f'{self.name}.log')
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        handler.setFormatter(formatter)
+        self.logger.addHandler(handler)
+        self.logger.setLevel(logging.INFO)
+        self.logger.info(f"Initialized experiment '{self.name}'.")
 
     def run(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Executes the experiment using the provided data and labels.
@@ -60,13 +73,23 @@ class SingleExperiment:
         experiment_output : np.ndarray
             The output from the experiment, typically predictions or computed results.
         """
-
-        return self.run_callable(X, y)
+        try:
+            self.logger.info("Starting experiment run.")
+            result = self.run_callable(X, y)
+            self.logger.info("Experiment completed successfully.")
+            self.logger.info(f"Result: {result}")
+            return result
+        except Exception as e:
+            self.logger.error(f"An error occurred: {e}", exc_info=True)
+            raise
 
     def set_model(self, model):
+        """Sets the model for the experiment."""
         self.model = model
+        self.logger.info("Model has been set.")
 
     def get_model(self):
+        """Returns the model used in the experiment."""
         return self.model
 
 
